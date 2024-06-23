@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="no">
+  <head>
+    <title>Skriftlig eksamen</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="stylesheet2.css" />
+    <link rel="icon" href="icon.png" />
+  </head>
+  <body>
+    <div id="innpakning">
+      <img src="./Vedlegg/kartutsnitt.png" width="900" height="525" />
+      <img class="icon" src="./Vedlegg/ikon.png" height="50px" width="50px" />
+      <img class="icon" src="./Vedlegg/ikon.png" height="50px" width="50px" />
+      <img class="icon" src="./Vedlegg/ikon.png" height="50px" width="50px" />
+      <div id="skjema">
+        <label for="farge">Hvilken farge er sparkesykkelen?</label>
+        <select id="farge">
+          <option value="0" selected>Velg farge</option>
+          <option value="rod">Rød</option>
+          <option value="gul">Gul</option>
+          <option value="blaa">Blå</option>
+        </select>
+        <label for="hinderFor">Hvem hindrer sparkesykkelen for?</label>
+        <select id="hinderFor">
+          <option value="gaaende" selected>Gående</option>
+          <option value="kjoretoy">Kjøretøy</option>
+          <option value="motortrafikk">Motortrafikk</option>
+        </select>
+        <textarea placeholder="Venligst fortell litt om problemet"></textarea>
+        <button id="send">Send</button>
+        <button id="lukk">Avbryt</button>
+      </div>
+    </div>
+    <script>
+      // definerer variabler
+      let innpakningEl = document.querySelector("#innpakning");
+      let iconEl = document.querySelectorAll(".icon");
+      let batteriEl = [];
+      let nivaaEl = [];
+      let alleSparkesykler = [];
+      let skjemaEl = document.querySelector("#skjema");
+      let fargeEl = document.querySelector("#farge");
+      let hinderEl = document.querySelector("#hinderFor");
+      let textareaEl = document.querySelector("textarea");
+      let sendEl = document.querySelector("#send");
+      let lukkEl = document.querySelector("#lukk");
+      let feilmelding = false;
+
+      // oppretter batterirelaterte elementer
+      for (let i = 0; i < iconEl.length; i++) {
+        let batteri = document.createElement("div");
+        batteri.classList.add("batteri");
+        let nivaa = document.createElement("div");
+        nivaa.classList.add("batterinivaa");
+        batteri.appendChild(nivaa);
+        innpakningEl.appendChild(batteri);
+        nivaaEl.push(nivaa);
+        batteriEl.push(batteri);
+      }
+      let batterinivaaEl = document.querySelectorAll(".batterinivaa");
+
+      // Samler elementer og relatert data til hver enkelt sparkesykkel i en array med objekter
+      for (let i = 0; i < iconEl.length; i++) {
+        let enSykkel = {};
+        enSykkel.ikon = iconEl[i];
+        enSykkel.batteriPlass = batteriEl[i];
+        enSykkel.batteriIndikator = nivaaEl[i];
+        alleSparkesykler.push(enSykkel);
+      }
+      alleSparkesykler[0].batteriNivaa = 20;
+      alleSparkesykler[0].xPlass = 150;
+      alleSparkesykler[0].yPlass = 200;
+      alleSparkesykler[1].batteriNivaa = 45;
+      alleSparkesykler[1].xPlass = 500;
+      alleSparkesykler[1].yPlass = 400;
+      alleSparkesykler[2].batteriNivaa = 75;
+      alleSparkesykler[2].xPlass = 700;
+      alleSparkesykler[2].yPlass = 200;
+
+      // tilegner hendelseslyttere og plasseringer
+      sendEl.addEventListener("click", sendSkjema);
+      lukkEl.addEventListener("click", lukkSkjema);
+      for (let i = 0; i < alleSparkesykler.length; i++) {
+        alleSparkesykler[i].ikon.addEventListener("mouseover", function () {
+          visNivaa(i);
+        });
+        alleSparkesykler[i].ikon.addEventListener("mouseout", function () {
+          fjernNivaa(i);
+        });
+        alleSparkesykler[i].batteriPlass.addEventListener(
+          "mouseover",
+          function () {
+            visNivaa(i);
+          }
+        );
+        alleSparkesykler[i].ikon.addEventListener("click", function () {
+          skjema(i);
+        });
+        alleSparkesykler[i].batteriPlass.addEventListener("click", function () {
+          skjema(i);
+        });
+        alleSparkesykler[i].ikon.style.left = alleSparkesykler[i].xPlass + "px";
+        alleSparkesykler[i].ikon.style.top = alleSparkesykler[i].yPlass + "px";
+        alleSparkesykler[i].batteriPlass.style.left =
+          alleSparkesykler[i].xPlass + 6 + "px";
+        alleSparkesykler[i].batteriPlass.style.top =
+          alleSparkesykler[i].yPlass + 20 + "px";
+      }
+
+      function skjema(i) {
+        skjemaEl.style.display = 'block';
+      }
+      function lukkSkjema () {
+        skjemaEl.style.display = "none";
+      }
+      function sendSkjema() {
+        if (feilmelding == true) {
+          //ikke legg til mer
+        } else if (fargeEl.value == 0) {
+          let pEl = document.createElement("p");
+          pEl.innerHTML = "Velg farge før du sender";
+          skjemaEl.appendChild(pEl);
+          feilmelding = true;
+        } else {
+          let tekst =
+            "<p>En " +
+            fargeEl.value +
+            "farget sparkesykkel er til hinder for " +
+            hinderEl.value;
+          if (textareaEl.value != "") {
+            tekst +=
+              ". <br> Du sendte denne beskrivelsen:<br>" + textareaEl.value;
+          }
+          tekst += "</p>";
+          skjemaEl.innerHTML = tekst;
+        }
+      }
+
+      function visNivaa(i) {
+        alleSparkesykler[i].batteriIndikator.style.width =
+          alleSparkesykler[i].batteriNivaa + "%";
+        alleSparkesykler[i].batteriPlass.style.opacity = 1;
+        alleSparkesykler[i].ikon.style.boxShadow = "0 0 4px green"
+      }
+      function fjernNivaa(i) {
+        alleSparkesykler[i].batteriIndikator.style.width = "0%";
+        alleSparkesykler[i].batteriPlass.style.opacity = 0;
+        alleSparkesykler[i].ikon.style.boxShadow = "none"
+
+      }
+    </script>
+  </body>
+</html>
