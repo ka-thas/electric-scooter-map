@@ -30,7 +30,9 @@
                 <button id="lukk">Avbryt</button>
             </div>
             <div id="UI">
-                <p id="info">Angi posisjonen din ved å trykke på kartet</p>
+                <p id="info">
+                    Angi posisjonen din ved å dobbeltrykke på kartet
+                </p>
                 <label for="antall">Antall som vises</label>
                 <input id="antall" type="number" min="4" max="24" value="4" />
                 <label for="minStrøm" min="20" max="100">Minimum strøm</label>
@@ -76,7 +78,7 @@
                     let batteri = document.createElement("div");
                     batteri.classList.add("batteri");
                     let nivaa = document.createElement("div");
-                    nivaa.classList.add("batterinivaa");
+                    nivaa.classList.add("batterinivå");
                     batteri.appendChild(nivaa);
                     innpakningEl.appendChild(batteri);
                     enSykkel.batteriPlass = batteri;
@@ -90,7 +92,7 @@
                     enSykkel.ikon = dotEl;
                     enSykkel.xPlass = venstre;
                     enSykkel.yPlass = topp;
-                    enSykkel.batteriNivaa = Math.round(
+                    enSykkel.batterinivå = Math.round(
                         Math.random() * (100 - minStrømEl.value) +
                             minStrømEl.value
                     );
@@ -223,7 +225,7 @@
 
             function visNivaa(i) {
                 alleSparkesykler[i].batteriIndikator.style.width =
-                    alleSparkesykler[i].batteriNivaa + "%";
+                    alleSparkesykler[i].batterinivå + "%";
                 alleSparkesykler[i].batteriPlass.style.opacity = 1;
                 alleSparkesykler[i].ikon.style.boxShadow = "0 0 4px green";
             }
